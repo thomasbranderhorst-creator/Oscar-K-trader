@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proof &amp; method · Oscar K</title>
+<meta name="description" content="How the Oscar K backtests are built: out-of-sample firewall, dual implementation, costs baked in, and published failures.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav><div class="wrap navrow">
+  <a class="logo" href="index.html"><span class="mark">OK</span> Oscar K</a>
+  <div class="navlinks">
+    <a href="index.html">Home</a>
+    <a href="ok-system.html">OK System</a>
+    <a href="mr4h.html">MR4H</a>
+    <a href="proof.html" class="active">Proof &amp; method</a>
+    <a href="systems-test.html">Systems test</a>
+    <a href="journal.html">Live test</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+
+  <section class="block" style="padding-top:56px">
+    <div class="eyebrow">Methodology</div>
+    <h1>Why you can take<br>these numbers seriously</h1>
+    <p class="lede">
+      Anyone can show a beautiful backtest. The question is how it was produced.
+      This is the complete protocol — including where it can go wrong and what is
+      built in to prevent that.
+    </p>
+  </section>
+
+  <section class="block">
+    <div class="section-head"><h2>The protocol</h2></div>
+    <div class="grid cols2">
+      <div class="panel">
+        <div class="feature"><div class="ico">🧱</div><div><h3>1 · Out-of-sample firewall</h3><p>Parameters are chosen on a bounded time window (for MR4H: 2023–2026). All data outside it is "blind": it never influenced the choice and serves as an independent test. In-sample and OOS numbers are always reported separately — the OOS number is the real number.</p></div></div>
+        <div class="feature"><div class="ico">🧊</div><div><h3>2 · Block robustness over headline numbers</h3><p>Every configuration is judged per time block (e.g. 2012–16 / 2017–21 / 2022–26). A config that loses one block is out — however pretty the total. In-sample winners look good by definition; blocks reveal whether the edge survives regimes.</p></div></div>
+        <div class="feature"><div class="ico">🧪</div><div><h3>3 · Two independent implementations</h3><p>The full logic exists twice: as a TradingView strategy (Pine) and as a separate Python port. Every logic change is verified in the port first, and only then built in Pine. Two implementations on independent data showing the same picture — only then does it count. This also catches TradingView artefacts such as repainting and optimistic fills.</p></div></div>
+        <div class="feature"><div class="ico">🏷️</div><div><h3>4 · Costs baked in</h3><p>Spread and commission are included in every reported result (~1.1 pip for MR4H; Darwinex conditions for the OK System). No gross numbers.</p></div></div>
+      </div>
+      <div class="panel">
+        <div class="feature"><div class="ico">📏</div><div><h3>5 · Measured in R, not in currency</h3><p>Every trade risks a fixed percentage; results are reported in risk units (R). That makes numbers comparable across tickers, periods and account sizes — and prevents the classic trick where one lucky oversized position makes the track record.</p></div></div>
+        <div class="feature"><div class="ico">🔬</div><div><h3>6 · Data honesty</h3><p>Known data artefacts are reported, not swept away: in 2012–2013 the FX feed is missing Friday-evening bars (so a small number of trades artificially ran over the weekend), and the first DAX measurement proved contaminated because the time-exit fell outside trading hours. Both are documented — the second led to DAX's definitive rejection.</p></div></div>
+        <div class="feature"><div class="ico">🗑️</div><div><h3>7 · Failures get published</h3><p>DAX: rejected (PF 1.017 after a clean remeasurement). The untouched-zone requirement: rejected (strangles half the trades). Extra risk on gold: rejected (return/DD ratio too poor). Counter-trade safety: regime-sensitive, off. Whoever only shows winners has something to hide.</p></div></div>
+        <div class="feature"><div class="ico">📓</div><div><h3>8 · Forward test as the final exam</h3><p>Since 28 July 2026 both systems run live on Darwinex. Every trade — including the ones where I break my own rules — is in the <a href="journal.html" style="color:var(--txt)">journal</a>, MT5 ticket number included. The track record is registered independently by Darwinex, not self-reported.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>What is deliberately <em>not</em> claimed</h2>
+      <p class="hint">Just as important as the evidence itself.</p>
+    </div>
+    <div class="grid cols3">
+      <div class="panel">
+        <h3>No PF-1.4-across-everything</h3>
+        <p style="color:var(--muted);font-size:13.5px;margin:8px 0 0">No OK System configuration reaches PF 1.4 across the full 14.5 years. The edge is thin long-term and stronger in the current regime. That's stated plainly — and it's the reason for modest risk per trade.</p>
+      </div>
+      <div class="panel">
+        <h3>No money promises</h3>
+        <p style="color:var(--muted);font-size:13.5px;margin:8px 0 0">Backtest returns ("+227%", "+40R") are hypothetical, hindsight-computed outcomes at fixed risk percentages. They predict nothing. The forward test first has to prove for months that live does what the test promised.</p>
+      </div>
+      <div class="panel">
+        <h3>No hidden discretion</h3>
+        <p style="color:var(--muted);font-size:13.5px;margin:8px 0 0">Where execution deviates from the rules, it's logged as a deviation — profitable trades still get registered as rule breaks, including what the result would have been by the book.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="panel" style="text-align:center;padding:44px 22px">
+      <h2>Verify it yourself</h2>
+      <p class="lede" style="margin:10px auto 24px">
+        The live test runs on a fresh account with bot execution, benchmarked against the systems test. Follow along and judge in a few
+        months whether the forward numbers live up to the backtest.
+      </p>
+      <a class="btn primary" href="journal.html">To the forward journal</a>
+    </div>
+  </section>
+
+</div>
+
+<footer><div class="wrap">
+  <div class="footrow">
+    <span><strong>Oscar K</strong> · systematic trading, radically transparent</span>
+    <span><a href="ok-system.html">OK System</a> · <a href="mr4h.html">MR4H</a> · <a href="proof.html">Proof</a> · <a href="systems-test.html">Systems test</a> · <a href="journal.html">Live test</a></span>
+  </div>
+  <p class="disclaimer">
+    <strong>Disclaimer.</strong> Nothing on this site is investment advice. Backtest results are hypothetical,
+    computed in hindsight, and no guarantee of future results; live results may differ due to slippage, spreads
+    and news gaps. Trading forex, indices and CFDs carries a high risk of loss.
+  </p>
+</div></footer>
+
+</body>
+</html>

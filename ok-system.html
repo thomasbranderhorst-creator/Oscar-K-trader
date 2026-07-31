@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OK System — ICT sweep→retest · Oscar K</title>
+<meta name="description" content="OK System: mechanical ICT sweep→retest strategy, London-morning intraday. 14.5-year deep backtest on EURUSD, GBPUSD and XAUUSD.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav><div class="wrap navrow">
+  <a class="logo" href="index.html"><span class="mark">OK</span> Oscar K</a>
+  <div class="navlinks">
+    <a href="index.html">Home</a>
+    <a href="ok-system.html" class="active">OK System</a>
+    <a href="mr4h.html">MR4H</a>
+    <a href="proof.html">Proof &amp; method</a>
+    <a href="systems-test.html">Systems test</a>
+    <a href="journal.html">Live test</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+
+  <section class="block" style="padding-top:56px">
+    <span class="badge ok"><span class="dot ok" style="width:6px;height:6px"></span>OK System · v2.16</span>
+    <h1 style="margin-top:14px">ICT sweep → retest,<br>London-morning intraday</h1>
+    <p class="lede">
+      Born as a discretionary ICT system, made mechanical trade by trade, then tested
+      across 14.5 years of 5-minute data. The full logic is frozen and identical on
+      all three tickers — only the session window differs per market.
+    </p>
+  </section>
+
+  <section class="block">
+    <div class="grid cols2-w">
+      <div class="panel">
+        <h2>How it works</h2>
+        <p class="hint">The core in four steps. Exact parameter values stay private; the structure is fully public.</p>
+        <div class="feature"><div class="ico">1</div><div><h3>Liquidity sweep</h3><p>In the London-morning window, price raids the Asia range (AS.H/AS.L) or a 5m swing point and closes back inside — a liquidity sweep, not a genuine breakout.</p></div></div>
+        <div class="feature"><div class="ico">2</div><div><h3>Zone required</h3><p>The sweep must occur inside a higher-timeframe zone (FVG). In validation this proved to be the only "switch" that lifts the hardest block (2017–2021) to break-even and halves the drawdown.</p></div></div>
+        <div class="feature"><div class="ico">3</div><div><h3>Market-structure shift as gatekeeper</h3><p>Only after a confirmed MSS in the opposite direction is an order placed. Without this requirement drawdown in testing ran up to 76% — the MSS rule is a survival condition.</p></div></div>
+        <div class="feature"><div class="ico">4</div><div><h3>Entry in the gap, hard exits</h3><p>Limit entry deep in the entry gap, stop with a small ATR buffer behind the sweep extreme, fixed TP per ticker, time-exit 22:45 — never an overnight position. Max 1 trade per day.</p></div></div>
+      </div>
+      <div class="panel">
+        <h2>Configuration per ticker</h2>
+        <p class="hint">One frozen rule set; only the time layer and TP/risk differ per market.</p>
+        <div class="tablewrap"><table>
+          <thead><tr><th></th><th>EURUSD</th><th>GBPUSD</th><th>XAUUSD</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--muted)">Sweep window</td><td>09:00–11:30</td><td>08:00–11:30</td><td>09:00–11:30</td></tr>
+            <tr><td style="color:var(--muted)">Take-profit</td><td>2R</td><td>4R</td><td>time-exit</td></tr>
+            <tr><td style="color:var(--muted)">Risk per trade</td><td>1.0%</td><td>0.5%</td><td>0.5%</td></tr>
+            <tr><td style="color:var(--muted)">Trades/week</td><td>0.71</td><td>1.09</td><td>0.59</td></tr>
+          </tbody>
+        </table></div>
+        <div class="note" style="margin-top:14px">
+          Why different TPs? From the TP-ladder measurement: EURUSD is indifferent
+          between 2R and 4R (2R chosen — steadier years), GBPUSD doubles its
+          expectancy at 4R, and gold gets strangled by a tight TP — there the
+          time-exit does the work.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>Deep backtest — judged per time block</h2>
+      <p class="hint">Jan 2012 – Jul 2026, 5m data, estimated costs included. Configurations are judged on robustness across three time blocks — never on the headline number, because in-sample winners look good by definition.</p>
+    </div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Ticker</th><th class="num">PF total</th><th class="num">2012–16</th><th class="num">2017–21</th><th class="num">2022–26</th><th class="num">Max DD</th><th class="num">Trades/wk</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge ok">EURUSD</span></td><td class="num">1.26</td><td class="num">1.13</td><td class="num">1.02</td><td class="num">1.67</td><td class="num neg-t">12.2%</td><td class="num">0.71</td></tr>
+        <tr><td><span class="badge ok">GBPUSD</span></td><td class="num">1.17</td><td class="num">1.05</td><td class="num">1.25</td><td class="num">1.22</td><td class="num neg-t">12.2%</td><td class="num">1.09</td></tr>
+        <tr><td><span class="badge ok">XAUUSD</span></td><td class="num">1.19</td><td class="num">1.15</td><td class="num">1.16</td><td class="num">1.26</td><td class="num">—</td><td class="num">0.59</td></tr>
+        <tr style="background:#0f1826"><td><strong>Portfolio</strong></td><td class="num pos-t">+227%</td><td class="num" colspan="3" style="color:var(--muted)">sum since Aug 2013 · not a single losing block (XAU)</td><td class="num neg-t">15.9%</td><td class="num"><strong>2.40</strong></td></tr>
+      </tbody>
+    </table></div>
+    <div class="grid cols3" style="margin-top:18px">
+      <div class="kpi"><div class="label">Correlation EU ↔ GU</div><div class="val">+0.05</div><div class="foot">R-correlation on overlap days — practically zero</div></div>
+      <div class="kpi"><div class="label">Correlation XAU ↔ EU</div><div class="val">+0.06</div><div class="foot">gold moves independently</div></div>
+      <div class="kpi"><div class="label">Correlation XAU ↔ GU</div><div class="val">+0.26</div><div class="foot">low — real diversification</div></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="grid cols2">
+      <div class="panel">
+        <h2>How the configuration was chosen</h2>
+        <p class="hint">Eight entry configurations, 14.5 years of EURUSD, judged per time block. The winner is the only one without a losing block and with the lowest drawdown.</p>
+        <div class="feature"><div class="ico">✓</div><div><h3>MSS required</h3><p>Without it: 76% drawdown in 2017–21. Non-negotiable.</p></div></div>
+        <div class="feature"><div class="ico">✓</div><div><h3>Zone required</h3><p>The only switch that lifts the problem block to break-even and halves the DD.</p></div></div>
+        <div class="feature"><div class="ico">✗</div><div><h3>Requiring an "untouched" zone</h3><p>Tested and dead: strangles all Asia trades, net losing. Touched ≠ toxic.</p></div></div>
+        <div class="feature"><div class="ico">✗</div><div><h3>Counter-trade safety (P40)</h3><p>Regime-sensitive: shines 2022–26, loses 2012–16. Left off.</p></div></div>
+        <div class="note warn" style="margin-top:14px">
+          Full honesty: no configuration reaches PF 1.4 across the entire 14.5 years.
+          The edge is thin long-term and strong in the current regime. Hence: modest
+          risk, block-robustness as a hard criterion, and a forward test before
+          anything becomes investable.
+        </div>
+      </div>
+      <div class="panel">
+        <h2>What was rejected</h2>
+        <p class="hint">Measured, published, benched. This is part of the evidence.</p>
+        <div class="feature"><div class="ico">🗑️</div><div><h3>DAX (GER40)</h3><p>The first measurement looked interesting but turned out contaminated: 56% of trades stayed open overnight because the time-exit fell outside trading hours. Remeasured cleanly: PF 1.017 — flat across all blocks. Definitively rejected; an annual recheck suffices.</p></div></div>
+        <div class="feature"><div class="ico">🗑️</div><div><h3>Afternoon window 13:00–16:00</h3><p>Entries before or into the US open get run over (PF 0.40 around 15:00). Excluded.</p></div></div>
+        <div class="feature"><div class="ico">🗑️</div><div><h3>More risk on gold</h3><p>XAU at 0.75% instead of 0.5%: +31 percentage points of return for +3.2pp of drawdown. Rejected — the ratio isn't worth it.</p></div></div>
+        <h2 style="margin-top:22px">Open items</h2>
+        <p class="hint">What's still on the research list — that's public too.</p>
+        <p style="color:var(--muted);font-size:13.5px;margin:0">
+          A news layer (flat before CPI/NFP 14:30 and FOMC 20:00 — most important for
+          gold), a break-even test per ticker, rule-based exits (there is demonstrably
+          profit evaporating between 4R and the time-exit), and the correlation
+          measurement with the MR4H system for the 6-sleeve portfolio.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer><div class="wrap">
+  <div class="footrow">
+    <span><strong>Oscar K</strong> · systematic trading, radically transparent</span>
+    <span><a href="ok-system.html">OK System</a> · <a href="mr4h.html">MR4H</a> · <a href="proof.html">Proof</a> · <a href="systems-test.html">Systems test</a> · <a href="journal.html">Live test</a></span>
+  </div>
+  <p class="disclaimer">
+    <strong>Disclaimer.</strong> Nothing on this site is investment advice. Backtest results are hypothetical,
+    computed in hindsight, and no guarantee of future results; live results may differ due to slippage, spreads
+    and news gaps. Trading forex, indices and CFDs carries a high risk of loss.
+  </p>
+</div></footer>
+
+</body>
+</html>

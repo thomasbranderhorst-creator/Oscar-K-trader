@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oscar K — Systematic trading, radically transparent</title>
+<meta name="description" content="Two mechanical trading systems, live forward test on Darwinex. All backtests, rules and mistakes published.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav><div class="wrap navrow">
+  <a class="logo" href="index.html"><span class="mark">OK</span> Oscar K</a>
+  <div class="navlinks">
+    <a href="index.html" class="active">Home</a>
+    <a href="ok-system.html">OK System</a>
+    <a href="mr4h.html">MR4H</a>
+    <a href="proof.html">Proof &amp; method</a>
+    <a href="systems-test.html">Systems test</a>
+    <a href="journal.html">Live test</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="block" style="padding-top:72px">
+    <div class="eyebrow">Systematic trading · forward test live</div>
+    <h1>Two mechanical systems.<br>Every number verifiable.</h1>
+    <p class="lede">
+      I trade two fully mechanical strategies and publish everything about them:
+      the backtests spanning 9–14.5 years, the out-of-sample results, and the live
+      forward journal — including the trades where I broke my own rules. No
+      cherry-picking. What didn't work is on here too.
+    </p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:26px">
+      <a class="btn primary" href="journal.html">Live forward test</a>
+      <a class="btn" href="proof.html">See the evidence</a>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
+      <span class="chip"><span class="dot ok"></span>OK System · ICT sweep→retest · London intraday</span>
+      <span class="chip"><span class="dot clause"></span>MR4H · mean-reversion · overnight swing</span>
+      <span class="chip">⚡ Forward test on Darwinex since 28 July 2026</span>
+    </div>
+  </section>
+
+  <!-- LIVE FORWARD STRIP -->
+  <section class="block">
+    <div class="section-head">
+      <h2>Forward test — live status</h2>
+      <p class="hint">Computed automatically from the journal. Measured in R (risk per trade = 1R).</p>
+    </div>
+    <div class="kpis" id="liveKpis"></div>
+  </section>
+
+  <!-- THE TWO SYSTEMS -->
+  <section class="block">
+    <div class="section-head">
+      <h2>The two systems</h2>
+      <p class="hint">Different logic, different session, different horizon — deliberately low-correlated.</p>
+    </div>
+    <div class="grid cols2">
+
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
+          <div>
+            <span class="badge ok"><span class="dot ok" style="width:6px;height:6px"></span>OK System</span>
+            <h3 style="margin-top:10px;font-size:19px">ICT sweep → retest, London morning</h3>
+          </div>
+          <span class="badge neutral">v2.16 · intraday</span>
+        </div>
+        <p style="color:var(--muted);font-size:14px;margin:8px 0 16px">
+          A liquidity sweep of the Asia range or a swing point, a market-structure
+          shift as gatekeeper, entry in the gap. Flat the same day (time-exit 22:45).
+          Three tickers, one frozen rule set.
+        </p>
+        <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(118px,1fr))">
+          <div class="kpi"><div class="label">Backtest</div><div class="val" style="font-size:19px">14.5 yrs</div><div class="foot">2012 – 2026, 5m data</div></div>
+          <div class="kpi"><div class="label">Return</div><div class="val pos" style="font-size:19px">+227%</div><div class="foot">portfolio sum since 2013</div></div>
+          <div class="kpi"><div class="label">Max DD</div><div class="val neg" style="font-size:19px">15.9%</div><div class="foot">combined</div></div>
+          <div class="kpi"><div class="label">Frequency</div><div class="val" style="font-size:19px">2.4/wk</div><div class="foot">EU + GU + XAU</div></div>
+        </div>
+        <div class="miniband" aria-label="Profit factor per ticker">
+          <div class="row"><span class="lbl">EURUSD</span><div class="track"><div class="fill" style="width:63%;background:var(--ok-s)"></div></div><span class="v">PF 1.26</span></div>
+          <div class="row"><span class="lbl">GBPUSD</span><div class="track"><div class="fill" style="width:58%;background:var(--ok-s)"></div></div><span class="v">PF 1.17</span></div>
+          <div class="row"><span class="lbl">XAUUSD</span><div class="track"><div class="fill" style="width:60%;background:var(--ok-s)"></div></div><span class="v">PF 1.19</span></div>
+        </div>
+        <div style="margin-top:18px"><a class="btn" href="ok-system.html">Full evidence →</a></div>
+      </div>
+
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
+          <div>
+            <span class="badge clause"><span class="dot clause" style="width:6px;height:6px"></span>MR4H</span>
+            <h3 style="margin-top:10px;font-size:19px">Mean-reversion basket, overnight swing</h3>
+          </div>
+          <span class="badge neutral">V5.3 · 4H · overnight</span>
+        </div>
+        <p style="color:var(--muted);font-size:14px;margin:8px 0 16px">
+          Extremely stretched price (short-period RSI at an extreme plus distance
+          from the mean) with a trend filter and a sweep condition; exit back at the
+          mean. Entries cluster in the NY afternoon, median 16 hours in the trade.
+          US500 long-only.
+        </p>
+        <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(118px,1fr))">
+          <div class="kpi"><div class="label">Backtest</div><div class="val" style="font-size:19px">9 yrs</div><div class="foot">2017 – 2026 · 244 trades</div></div>
+          <div class="kpi"><div class="label">Result</div><div class="val pos" style="font-size:19px">+40.0R</div><div class="foot">PF 2.19 · win 76%</div></div>
+          <div class="kpi"><div class="label">Max DD</div><div class="val neg" style="font-size:19px">−3.9R</div><div class="foot">basket vs −8.5R separate</div></div>
+          <div class="kpi"><div class="label">Out-of-sample</div><div class="val pos" style="font-size:19px">+21.4R</div><div class="foot">blind · PF 1.95 · 151 trades</div></div>
+        </div>
+        <div class="miniband" aria-label="Result per sleeve">
+          <div class="row"><span class="lbl">EURUSD</span><div class="track"><div class="fill" style="width:72%;background:var(--clause-s)"></div></div><span class="v">+14.3R</span></div>
+          <div class="row"><span class="lbl">GBPUSD</span><div class="track"><div class="fill" style="width:80%;background:var(--clause-s)"></div></div><span class="v">+16.0R</span></div>
+          <div class="row"><span class="lbl">US500 L</span><div class="track"><div class="fill" style="width:48%;background:var(--clause-s)"></div></div><span class="v">+9.6R</span></div>
+        </div>
+        <div style="margin-top:18px"><a class="btn" href="mr4h.html">Full evidence →</a></div>
+      </div>
+
+    </div>
+    <p class="hint" style="margin-top:14px">Backtest results are hypothetical and include estimated costs; they are no guarantee of future performance. See <a href="proof.html" style="color:var(--muted)">proof &amp; method</a> for the full methodology.</p>
+  </section>
+
+  <!-- WHY THIS IS DIFFERENT -->
+  <section class="block">
+    <div class="grid cols2-w">
+      <div class="panel">
+        <h2>Why you can verify this</h2>
+        <p class="hint">Most trading sites only show winners. Here the deal is reversed: everything is visible — especially what failed.</p>
+        <div class="feature"><div class="ico">🧱</div><div><h3>Out-of-sample firewall</h3><p>Configurations are selected on a bounded time window; everything outside it is tested blind. OOS results are reported separately — those are the numbers that count.</p></div></div>
+        <div class="feature"><div class="ico">🧪</div><div><h3>Two independent implementations</h3><p>Every rule change is first verified in a separate Python port and only then built in TradingView. Two implementations, same outcome — otherwise it doesn't count.</p></div></div>
+        <div class="feature"><div class="ico">🗑️</div><div><h3>Rejected ideas are published too</h3><p>DAX was measured and rejected. Extra risk on gold: rejected. Whatever fails gets published, numbers included — that's half the evidence.</p></div></div>
+        <div class="feature"><div class="ico">📓</div><div><h3>Forward journal with mistakes</h3><p>Every live trade is logged, including any deviation from the rules. A manual practice week in July made the case for automation — from August a bot executes, and the live test is measured against the systems test.</p></div></div>
+        <div class="feature"><div class="ico">🔍</div><div><h3>Verified via Darwinex</h3><p>The forward test runs on a real account at Darwinex. The track record is registered independently there — not self-reported.</p></div></div>
+      </div>
+      <div class="panel">
+        <h2>Where this is going</h2>
+        <p class="hint">The route, in order. No promises about the outcome — only about the process.</p>
+        <div class="feature"><div class="ico">1</div><div><h3>Forward test (now)</h3><p>Both systems live on Darwinex, every trade in the journal. The question: does live do what the backtest promised?</p></div></div>
+        <div class="feature"><div class="ico">2</div><div><h3>6-sleeve portfolio</h3><p>OK System (3 tickers) + MR4H (3 sleeves) combined. Key measurement: cross-system correlation near zero → lower combined drawdown.</p></div></div>
+        <div class="feature"><div class="ico">3</div><div><h3>DARWIN on Darwinex</h3><p>With proven forward results the system becomes investable as a DARWIN. Investors join through Darwinex's regulated platform; I only earn when they do.</p></div></div>
+        <div class="feature"><div class="ico">4</div><div><h3>Knowledge &amp; tools</h3><p>Along the way I share the method: how to mechanise a discretionary system, backtest it honestly and make it robust. Possibly as an in-depth guide and tooling later.</p></div></div>
+        <div class="note warn" style="margin-top:16px">
+          The DARWIN page will appear here once the forward test has matured. Want a message at that milestone? Email <a href="mailto:oskins1981@gmail.com" style="color:var(--ok)">oskins1981@gmail.com</a>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer><div class="wrap">
+  <div class="footrow">
+    <span><strong>Oscar K</strong> · systematic trading, radically transparent</span>
+    <span><a href="ok-system.html">OK System</a> · <a href="mr4h.html">MR4H</a> · <a href="proof.html">Proof</a> · <a href="systems-test.html">Systems test</a> · <a href="journal.html">Live test</a></span>
+  </div>
+  <p class="disclaimer">
+    <strong>Disclaimer.</strong> Nothing on this site is investment advice or a recommendation to buy or sell any
+    financial instrument. Trading forex, indices and CFDs carries a high risk of loss and is not suitable for
+    everyone. Backtest results are hypothetical, computed in hindsight, and no guarantee of future results; live
+    results may differ due to slippage, spreads and news gaps. Results are measured in R (risk units), not in
+    currency. Do your own research and never risk money you cannot afford to lose.
+  </p>
+</div></footer>
+
+<script src="data/trades.js"></script>
+<script>
+/* Live KPI strip from the journal */
+(function(){
+  const rows = TRADES.map(t=>{
+    let R = t.r;
+    if(R===null || R===undefined || R===""){
+      if([t.entry,t.sl,t.exit].every(v=>typeof v==="number")){
+        const risk=Math.abs(t.entry-t.sl);
+        R = risk? Math.round(((t.direction==="Short"? -(t.exit-t.entry): (t.exit-t.entry))/risk)*100)/100 : 0;
+      } else R = 0;
+    } else R = Number(R);
+    return {...t, R};
+  });
+  const n=rows.length;
+  const totalR=rows.reduce((a,t)=>a+t.R,0);
+  const wins=rows.filter(t=>t.R>0).length, losses=rows.filter(t=>t.R<0).length;
+  const followed=rows.filter(t=>t.followed).length;
+  const days=Math.max(1,Math.round((Date.now()-new Date(FORWARD_META.start))/86400000));
+  const f=(x,d=2)=>(x>=0?"+":"")+x.toFixed(d);
+  document.getElementById("liveKpis").innerHTML = `
+    <div class="kpi accent"><div class="label">Net result</div><div class="val ${totalR>=0?'pos':'neg'}">${f(totalR)}R</div><div class="foot">${n} trade${n===1?"":"s"} logged</div></div>
+    <div class="kpi"><div class="label">Wins / losses</div><div class="val">${wins} / ${losses}</div><div class="foot">forward, live</div></div>
+    <div class="kpi"><div class="label">Discipline</div><div class="val">${n? Math.round(followed/n*100):0}%</div><div class="foot">${followed}/${n} by the book</div></div>
+    <div class="kpi"><div class="label">Days live</div><div class="val">${days}</div><div class="foot">since ${new Date(FORWARD_META.start).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</div></div>
+    <div class="kpi"><div class="label">Broker</div><div class="val" style="font-size:19px">Darwinex</div><div class="foot">MT5 · independently registered</div></div>`;
+})();
+</script>
+</body>
+</html>

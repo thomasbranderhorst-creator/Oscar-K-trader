@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live forward test · Oscar K</title>
+<meta name="description" content="Live forward test: every real trade of the MR4H and OK System strategies, including deviations and mistakes. Measured in R.">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* journal-specific */
+  .tabs{display:inline-flex;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:4px}
+  .tabs button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:600;
+    padding:8px 15px;border-radius:9px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:7px}
+  .tabs button:hover{color:var(--txt)}
+  .tabs button.active{background:#1a2534;color:var(--txt)}
+  .tabs button.active.clause{box-shadow:inset 0 0 0 1px rgba(34,211,238,.4)}
+  .tabs button.active.ok{box-shadow:inset 0 0 0 1px rgba(245,158,11,.4)}
+  .chartbox{position:relative}
+  svg.equity{width:100%;height:250px;display:block}
+  .axis-lbl{fill:var(--muted2);font-size:10px}
+  .gridline{stroke:var(--line);stroke-width:1;stroke-dasharray:3 4}
+  .zeroline{stroke:var(--line2);stroke-width:1.2}
+  .legend{display:flex;gap:14px;font-size:12px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .syscard{border:1px solid var(--line);border-radius:14px;padding:14px 15px;background:var(--card2);margin-bottom:12px}
+  .syscard:last-child{margin-bottom:0}
+  .syscard .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .syscard .name{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px}
+  .syscard .rtot{font-size:18px;font-weight:750}
+  .ministats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .ministat .k{color:var(--muted2);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px}
+  .ministat .v{font-size:15px;font-weight:700;margin-top:3px}
+  .bar{height:7px;border-radius:6px;background:#1b2735;overflow:hidden;margin-top:12px;display:flex}
+  .bar i{height:100%;display:block}
+  .dist{display:flex;align-items:flex-end;gap:7px;height:120px;margin-top:6px}
+  .dist .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%}
+  .dist .col .b{width:100%;border-radius:5px 5px 0 0;min-height:2px;transition:.3s}
+  .dist .col .c{font-size:11px;color:var(--muted);font-weight:600}
+  .dist .col .t{font-size:10px;color:var(--muted2)}
+  .dir{font-weight:600;font-size:12px}
+  .dir.long{color:var(--pos)} .dir.short{color:var(--neg)}
+  .rcell{font-weight:750;font-variant-numeric:tabular-nums}
+  .rcell.pos{color:var(--pos)} .rcell.neg{color:var(--neg)} .rcell.be{color:var(--be)}
+  .tag{font-size:11px;color:var(--muted);background:#152030;border:1px solid var(--line);padding:2px 7px;border-radius:6px}
+  .yes{color:var(--pos);font-weight:700} .no{color:var(--neg);font-weight:700}
+  .note-i{cursor:help;color:var(--muted2)}
+  .px{font-variant-numeric:tabular-nums;color:var(--muted)}
+  .nw{white-space:nowrap}
+  .thumb{width:64px;height:36px;object-fit:cover;border-radius:6px;border:1px solid var(--line2);cursor:zoom-in;display:block}
+  .thumb-ph{width:64px;height:36px;border-radius:6px;border:1px dashed var(--line2);display:grid;place-items:center;font-size:9px;color:var(--muted2)}
+  .cmt{max-width:340px;min-width:220px;white-space:normal;font-size:12px;color:var(--muted);line-height:1.45}
+  .iv{font-weight:700;font-size:12px}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:6px}
+  .shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card2)}
+  .shot .im{aspect-ratio:16/9;width:100%;object-fit:cover;display:block;cursor:zoom-in}
+  .shot .ph{aspect-ratio:16/9;display:grid;place-items:center;color:var(--muted2);font-size:12px;background:#0e1622}
+  .shot .cap{padding:9px 12px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:8px;align-items:center}
+  .lb{position:fixed;inset:0;background:rgba(4,8,14,.92);display:none;place-items:center;z-index:100;cursor:zoom-out;padding:3vh 3vw}
+  .lb.on{display:grid}
+  .lb img{max-width:94vw;max-height:88vh;border-radius:10px;border:1px solid var(--line2)}
+  .lb .lbcap{position:fixed;bottom:2vh;left:0;right:0;text-align:center;color:var(--muted);font-size:13px}
+  .month-row{display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid var(--line);font-size:13px}
+  .month-row:last-child{border-bottom:0}
+  .month-row .m{color:var(--muted)}
+  .month-row .v{font-weight:700;font-variant-numeric:tabular-nums}
+  .panel-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+  .demo-banner{display:none;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.4);color:var(--ok);
+    border-radius:12px;padding:10px 16px;font-size:13px;font-weight:600;margin-bottom:16px}
+  .demo-banner.show{display:block}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap navrow">
+  <a class="logo" href="index.html"><span class="mark">OK</span> Oscar K</a>
+  <div class="navlinks">
+    <a href="index.html">Home</a>
+    <a href="ok-system.html">OK System</a>
+    <a href="mr4h.html">MR4H</a>
+    <a href="proof.html">Proof &amp; method</a>
+    <a href="systems-test.html">Systems test</a>
+    <a href="journal.html" class="active">Live test</a>
+  </div>
+</div></nav>
+
+<div class="wrap" style="padding-top:40px;padding-bottom:60px">
+
+  <header style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:space-between;margin-bottom:22px">
+    <div>
+      <div class="eyebrow">Real money · Darwinex MT5 · bot execution from August 2026</div>
+      <h1 style="font-size:clamp(24px,3vw,32px);margin-bottom:8px">Live forward test</h1>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span class="chip"><span class="dot clause"></span>MR4H · mean-reversion · overnight swing</span>
+        <span class="chip"><span class="dot ok"></span>OK System · ICT sweep→retest · London intraday</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div class="tabs" id="tabs">
+        <button data-f="all" class="active">All</button>
+        <button data-f="MR4H" class="clause">MR4H</button>
+        <button data-f="OK System" class="ok">OK System</button>
+      </div>
+      <button class="btn" id="demoBtn" title="Sample view with fictional trades — not my real results">Sample view</button>
+    </div>
+  </header>
+
+  <div class="demo-banner" id="demoBanner">⚠ Sample view active — these are fictional demo trades to illustrate the dashboard, NOT my real results. Click the button again to go back.</div>
+
+  <section id="emptyState" class="hidden" style="text-align:center;padding:70px 20px;border:1.5px dashed var(--line2);border-radius:var(--r);background:var(--card2)">
+    <h2>Clean slate — the real test starts here</h2>
+    <p style="color:var(--muted);max-width:520px;margin:0 auto 20px;font-size:14px">Fresh account, bot execution. A manual practice week in July made the conclusion clear: the human is the weak link — so from here the systems trade through a bot. Every fill lands here, and the benchmark is the <a href="systems-test.html" style="color:var(--txt)">systems test</a>.</p>
+  </section>
+
+  <div id="dash">
+    <section class="kpis" id="kpis" style="margin-bottom:20px"></section>
+
+    <div class="grid cols2-w" style="margin-bottom:18px">
+      <div class="panel chartbox">
+        <div class="panel-head">
+          <div><h3>Equity curve <span style="color:var(--muted2);font-weight:500">(cumulative, in R)</span></h3>
+            <p class="hint" id="eqHint" style="margin-bottom:0"></p></div>
+          <div class="legend" id="eqLegend"></div>
+        </div>
+        <svg class="equity" id="equity" preserveAspectRatio="none" role="img" aria-label="Cumulative equity curve in R"></svg>
+      </div>
+      <div class="panel">
+        <h3>Per system</h3>
+        <p class="hint">Two decorrelated income streams</p>
+        <div id="sysCards"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:18px">
+      <div class="panel-head"><div><h3>All trades — full ledger</h3><p class="hint" id="tblHint" style="margin-bottom:0"></p></div></div>
+      <div class="tablewrap">
+        <table style="min-width:1680px">
+          <thead><tr>
+            <th>#</th><th>Date</th><th>Open</th><th>Close</th><th>Dur</th><th>System</th><th>Symbol</th><th>Side</th>
+            <th class="num">Entry</th><th class="num">SL</th><th class="num">Exit</th>
+            <th class="num">R</th><th class="num">wR</th><th class="num">Risk %</th><th class="num">P&amp;L €</th>
+            <th>Score</th><th>News</th><th>Bias</th><th>Zone</th><th>Setup</th><th>Book</th><th>Interv.</th><th>Chart</th><th>Comment</th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid cols2" style="margin-bottom:18px">
+      <div class="panel">
+        <h3>R distribution</h3>
+        <p class="hint">Outcomes per bucket</p>
+        <div class="dist" id="dist"></div>
+        <div class="bar" id="disciplineBar" title="Discipline: trades executed by the book"></div>
+        <p class="hint" id="discHint" style="margin-top:10px"></p>
+      </div>
+      <div class="panel">
+        <h3>Per month</h3>
+        <p class="hint">Net R per calendar month</p>
+        <div id="months"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div><h3>Trade screenshots</h3><p class="hint" style="margin-bottom:0">One chart per trade — entry, SL and exit annotated</p></div></div>
+      <div class="gallery" id="gallery"></div>
+    </div>
+  </div>
+
+  <div class="lb" id="lb" onclick="this.classList.remove('on')"><img id="lbImg" alt=""><div class="lbcap" id="lbCap"></div></div>
+
+  <p style="color:var(--muted2);font-size:12px;text-align:center;margin-top:28px;line-height:1.6">
+    Measured in R (risk per trade = 1R). Currency is not the yardstick. Deviations from the system are logged as deviations — even when they were profitable.<br>
+    <span id="stamp"></span>
+  </p>
+</div>
+
+<footer><div class="wrap">
+  <p class="disclaimer">
+    <strong>Disclaimer.</strong> This journal shows my own live trades and is not investment advice.
+    Past results — backtest and forward alike — are no guarantee of future performance.
+  </p>
+</div></footer>
+
+<script src="data/trades.js"></script>
+<script>
+/* DEMO — purely to illustrate the dashboard; clearly labelled. */
+const DEMO = [
+  {id:1, system:"OK System", symbol:"EURUSD", direction:"Long",  openTime:"2026-08-03T09:20", closeTime:"2026-08-03T14:05", r:2.4, rrTarget:"4R cap", session:"London", setup:{sweepType:"wick", trigger:"AS.L"}, followed:true, note:"Demo"},
+  {id:2, system:"OK System", symbol:"GBPUSD", direction:"Short", openTime:"2026-08-03T10:05", closeTime:"2026-08-03T11:40", r:-1, rrTarget:"1.5R", session:"London", setup:{sweepType:"wick", trigger:"SWH"}, followed:true, note:"Demo"},
+  {id:3, system:"OK System", symbol:"XAU", direction:"Long", openTime:"2026-08-04T09:35", closeTime:"2026-08-04T22:45", r:1.5, rrTarget:"1.5R", session:"London", setup:{sweepType:"displacement", trigger:"AS.L"}, followed:true, note:"Demo"},
+  {id:4, system:"OK System", symbol:"EURUSD", direction:"Short", openTime:"2026-08-05T09:50", closeTime:"2026-08-05T10:35", r:-1, rrTarget:"1.5R", session:"London", setup:{sweepType:"wick", trigger:"PDH"}, followed:false, deviation:"Demo deviation", note:"Demo"},
+  {id:5, system:"OK System", symbol:"GBPUSD", direction:"Long", openTime:"2026-08-05T10:20", closeTime:"2026-08-05T15:30", r:3.1, rrTarget:"4R cap", session:"London", setup:{sweepType:"displacement", trigger:"SWL"}, followed:true, note:"Demo"},
+  {id:6, system:"OK System", symbol:"EURUSD", direction:"Long", openTime:"2026-08-11T09:25", closeTime:"2026-08-11T16:20", r:4.0, rrTarget:"4R cap", session:"London", setup:{sweepType:"displacement", trigger:"AS.L"}, followed:true, note:"Demo"},
+  {id:7, system:"MR4H", symbol:"EURUSD", direction:"Long", openTime:"2026-08-03T19:00", closeTime:"2026-08-04T11:20", r:1.8, rrTarget:"mean", session:"NY", setup:{rsi:4, stretchATR:1.3}, followed:true, note:"Demo"},
+  {id:8, system:"MR4H", symbol:"GBPUSD", direction:"Long", openTime:"2026-08-04T20:00", closeTime:"2026-08-05T13:40", r:2.6, rrTarget:"mean", session:"NY", setup:{rsi:3, stretchATR:1.4}, followed:true, note:"Demo"},
+  {id:9, system:"MR4H", symbol:"US500", direction:"Long", openTime:"2026-08-05T15:00", closeTime:"2026-08-06T18:10", r:-1.4, rrTarget:"mean", session:"NY", setup:{rsi:6, stretchATR:1.25}, followed:true, note:"Demo"},
+  {id:10, system:"MR4H", symbol:"EURUSD", direction:"Short", openTime:"2026-08-07T15:00", closeTime:"2026-08-08T09:30", r:1.2, rrTarget:"mean", session:"NY", setup:{rsi:96, stretchATR:1.3}, followed:true, note:"Demo"},
+  {id:11, system:"MR4H", symbol:"GBPUSD", direction:"Long", openTime:"2026-08-10T19:00", closeTime:"2026-08-11T10:15", r:-1, rrTarget:"mean", session:"NY", setup:{rsi:5, stretchATR:1.28}, followed:true, note:"Demo"},
+  {id:12, system:"MR4H", symbol:"US500", direction:"Long", openTime:"2026-08-11T15:00", closeTime:"2026-08-12T16:00", r:2.1, rrTarget:"mean", session:"NY", setup:{rsi:7, stretchATR:1.35}, followed:true, note:"Demo"}
+];
+
+/* series colours — validated on the dark surface (dataviz checks) */
+const COL = { clause:"#0aa2bd", ok:"#cc7a06", both:"#e7eef7" };
+
+let state = { filter:"all", demo:false };
+const $ = s=>document.querySelector(s);
+const fmt = (n,d=1)=> (n>=0?"+":"") + n.toFixed(d);
+const fmtR = n => fmt(n,2)+"R";
+
+function computeR(t){
+  if(t.r!==undefined && t.r!==null && t.r!=="") return Number(t.r);
+  if([t.entry,t.sl,t.exit].every(v=>typeof v==="number")){
+    const risk=Math.abs(t.entry-t.sl); if(!risk) return 0;
+    const raw=(t.exit-t.entry)/risk;
+    return Math.round((t.direction==="Short"? -raw: raw)*100)/100;
+  }
+  return 0;
+}
+function baseData(){ return state.demo ? DEMO : TRADES; }
+function activeData(){
+  return baseData().map(t=>({...t, R:computeR(t)}))
+          .filter(t=> state.filter==="all" || t.system===state.filter);
+}
+function stats(rows){
+  const n=rows.length;
+  const wins=rows.filter(t=>t.R>0), losses=rows.filter(t=>t.R<0), bes=rows.filter(t=>t.R===0);
+  const totalR=rows.reduce((a,t)=>a+t.R,0);
+  const gW=wins.reduce((a,t)=>a+t.R,0), gL=Math.abs(losses.reduce((a,t)=>a+t.R,0));
+  const pf= gL? gW/gL : (gW>0? Infinity:0);
+  const winRate= (wins.length+losses.length)? wins.length/(wins.length+losses.length)*100 : 0;
+  let cum=0,peak=0,dd=0;
+  rows.forEach(t=>{cum+=t.R; peak=Math.max(peak,cum); dd=Math.min(dd,cum-peak);});
+  const followed=rows.filter(t=>t.followed).length;
+  const interv=rows.filter(t=>t.intervenedR!=null && t.intervenedR!==0);
+  const intervR=interv.reduce((a,t)=>a+t.intervenedR,0);
+  const pnl=rows.reduce((a,t)=>a+(t.pnlEur??0),0);
+  const hasPnl=rows.some(t=>t.pnlEur!=null);
+  return {n,wins:wins.length,losses:losses.length,be:bes.length,totalR,pf,winRate,
+    expectancy:n?totalR/n:0, maxDD:dd,
+    best:n?Math.max(...rows.map(t=>t.R)):0, worst:n?Math.min(...rows.map(t=>t.R)):0,
+    followed, followRate:n?followed/n*100:0,
+    intervN:interv.length, intervR, pnl, hasPnl};
+}
+
+function render(){
+  const hasReal = TRADES.length>0;
+  $("#demoBanner").classList.toggle("show", state.demo);
+  if(!state.demo && !hasReal){ $("#emptyState").classList.remove("hidden"); $("#dash").classList.add("hidden"); $("#stamp").textContent=""; return; }
+  $("#emptyState").classList.add("hidden"); $("#dash").classList.remove("hidden");
+  const rows=activeData();
+  const s=stats(rows);
+  renderKpis(s); renderEquity(rows); renderSysCards(); renderTable(rows); renderDist(rows,s); renderMonths(rows); renderGallery(rows);
+  $("#tblHint").textContent = `${s.n} trade${s.n===1?"":"s"} shown`;
+  $("#eqHint").textContent = state.filter==="all"?"Both systems combined":state.filter;
+  $("#stamp").textContent = state.demo?"⚠ Sample view — fictional data.":"";
+}
+
+function renderKpis(s){
+  const pf = s.pf===Infinity?"∞":s.pf.toFixed(2);
+  const cards=[
+    {label:"Net R", val:fmtR(s.totalR), cls:s.totalR>=0?"pos":"neg", foot:`${s.n} trade${s.n===1?"":"s"}`, accent:true},
+    {label:"Win rate", val:s.winRate.toFixed(0)+"%", foot:`${s.wins}W · ${s.losses}L${s.be?` · ${s.be}BE`:""}`},
+    {label:"Profit factor", val:pf, foot:"gross profit / loss"},
+    {label:"Expectancy", val:fmtR(s.expectancy), cls:s.expectancy>=0?"pos":"neg", foot:"per trade"},
+    {label:"Max drawdown", val:s.maxDD.toFixed(1)+"R", cls:"neg", foot:"deepest valley"},
+    {label:"Best / worst", val:`${fmt(s.best,1)} / ${fmt(s.worst,1)}`, foot:"R"},
+    {label:"Discipline", val:s.followRate.toFixed(0)+"%", foot:`${s.followed}/${s.n} by the book`},
+    {label:"Discretion", val:fmtR(s.intervR), cls:s.intervR>0?"pos":s.intervR<0?"neg":"", foot:`${s.intervN} intervention${s.intervN===1?"":"s"} vs by-the-book`},
+    ...(s.hasPnl? [{label:"P&L", val:(s.pnl>=0?"+":"−")+"€"+Math.abs(s.pnl).toFixed(2).replace(/\.00$/,""), cls:s.pnl>=0?"pos":"neg", foot:"realized, € not the yardstick"}] : [])
+  ];
+  $("#kpis").innerHTML = cards.map(c=>`
+    <div class="kpi ${c.accent?'accent':''}">
+      <div class="label">${c.label}</div>
+      <div class="val ${c.cls||''}">${c.val}</div>
+      <div class="foot">${c.foot}</div>
+    </div>`).join("");
+}
+
+function renderEquity(rows){
+  const svg=$("#equity"); const W=760,H=250,pad={l:38,r:14,t:14,b:22};
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  if(!rows.length){svg.innerHTML="";return;}
+  const build=(rws)=>{let c=0;const pts=[0];rws.forEach(t=>{c+=t.R;pts.push(c);});return {pts};};
+  const all=build(rows);
+  const series=[];
+  if(state.filter==="all"){
+    series.push({...build(rows.filter(t=>t.system==="MR4H")),color:COL.clause,label:"MR4H"});
+    series.push({...build(rows.filter(t=>t.system==="OK System")),color:COL.ok,label:"OK System"});
+  }
+  series.push({...all,color: state.filter==="MR4H"?COL.clause: state.filter==="OK System"?COL.ok:COL.both, main:true});
+
+  const allVals=series.flatMap(s=>s.pts);
+  let min=Math.min(0,...allVals), max=Math.max(0,...allVals);
+  const rng=(max-min)||1; min-=rng*0.08; max+=rng*0.08;
+  const maxLen=Math.max(...series.map(s=>s.pts.length));
+  const X=i=>pad.l+(i/(Math.max(maxLen-1,1)))*(W-pad.l-pad.r);
+  const Y=v=>pad.t+(1-(v-min)/(max-min))*(H-pad.t-pad.b);
+
+  let g="";
+  const steps=4;
+  const dec=(max-min)<4?1:0;
+  for(let i=0;i<=steps;i++){const v=min+(max-min)*i/steps;const y=Y(v);
+    g+=`<line class="gridline" x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}"/>`;
+    g+=`<text class="axis-lbl" x="4" y="${y+3}">${(v.toFixed(dec)==="-0"?"0":v.toFixed(dec))}R</text>`;}
+  g+=`<line class="zeroline" x1="${pad.l}" y1="${Y(0)}" x2="${W-pad.r}" y2="${Y(0)}"/>`;
+
+  series.forEach(sr=>{
+    if(sr.pts.length<2) return;
+    const d=sr.pts.map((v,i)=>`${i?"L":"M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
+    if(sr.main){
+      const area=`M${X(0)},${Y(0)} `+sr.pts.map((v,i)=>`L${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ")+` L${X(sr.pts.length-1)},${Y(0)} Z`;
+      g+=`<path d="${area}" fill="${sr.color}" opacity="0.08"/>`;
+      g+=`<path d="${d}" fill="none" stroke="${sr.color}" stroke-width="2.4" stroke-linejoin="round"/>`;
+      const lv=sr.pts[sr.pts.length-1];
+      g+=`<circle cx="${X(sr.pts.length-1)}" cy="${Y(lv)}" r="3.5" fill="${sr.color}"/>`;
+    } else {
+      g+=`<path d="${d}" fill="none" stroke="${sr.color}" stroke-width="1.4" opacity="0.75" stroke-dasharray="4 3"/>`;
+    }
+  });
+  svg.innerHTML=g;
+  $("#eqLegend").innerHTML = state.filter==="all"
+    ? `<span><span style="width:12px;height:2px;background:${COL.clause};display:inline-block"></span>MR4H</span>
+       <span><span style="width:12px;height:2px;background:${COL.ok};display:inline-block"></span>OK System</span>
+       <span><span style="width:12px;height:2px;background:${COL.both};display:inline-block"></span>Combined</span>`
+    : "";
+}
+
+function renderSysCards(){
+  const box=$("#sysCards"); const src=baseData();
+  const systems=[["MR4H","clause",COL.clause],["OK System","ok",COL.ok]];
+  box.innerHTML = systems.map(([name,cls,col])=>{
+    const rows=src.map(t=>({...t,R:computeR(t)})).filter(t=>t.system===name);
+    const s=stats(rows);
+    const pf=s.pf===Infinity?"∞":s.pf.toFixed(2);
+    const wPct=s.winRate;
+    return `<div class="syscard">
+      <div class="top">
+        <div class="name"><span class="dot ${cls}"></span>${name}</div>
+        <div class="rtot" style="color:${s.totalR>=0?'var(--pos)':'var(--neg)'}">${fmtR(s.totalR)}</div>
+      </div>
+      <div class="ministats">
+        <div class="ministat"><div class="k">Trades</div><div class="v">${s.n}</div></div>
+        <div class="ministat"><div class="k">Win</div><div class="v">${s.winRate.toFixed(0)}%</div></div>
+        <div class="ministat"><div class="k">PF</div><div class="v">${pf}</div></div>
+        <div class="ministat"><div class="k">Max DD</div><div class="v" style="color:var(--neg)">${s.maxDD.toFixed(1)}</div></div>
+      </div>
+      <div class="bar"><i style="width:${wPct}%;background:${col}"></i><i style="width:${100-wPct}%;background:#2a3849"></i></div>
+    </div>`;
+  }).join("");
+}
+
+const px=v=>(typeof v==="number")? String(v.toFixed(5)).replace(/0+$/,"").replace(/\.$/,"") : "–";
+const esc=s=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+function tTime(iso){ if(!iso) return "–"; const m=String(iso).match(/T(\d{2}:\d{2})/); return m?m[1]:"–"; }
+function tDur(t){
+  const a=new Date(t.openTime), b=new Date(t.closeTime);
+  if(isNaN(a)||isNaN(b)) return t.holdHours!=null? t.holdHours+"h" : "–";
+  const mins=Math.round((b-a)/60000); if(mins<0) return "–";
+  const h=Math.floor(mins/60), m=mins%60;
+  return h? `${h}h${String(m).padStart(2,"0")}` : `${m}m`;
+}
+function setupText(t){
+  return t.system==="MR4H"
+    ? `RSI ${t.setup?.rsi??"–"} · ${t.setup?.stretchATR??"–"}×ATR`
+    : [t.setup?.sweepType, t.setup?.trigger, t.setup?.mss==="yes"?"MSS":null, t.setup?.fvg].filter(Boolean).join(" · ") || "–";
+}
+function openLb(src,cap){ $("#lbImg").src=src; $("#lbCap").textContent=cap||""; $("#lb").classList.add("on"); }
+function tCap(t){ return `#${t.id} · ${t.symbol} ${t.direction} · ${fmtR(t.R)}`; }
+
+function renderTable(rows){
+  $("#tbody").innerHTML = rows.slice().reverse().map(t=>{
+    const cls=t.R>0?"pos":t.R<0?"neg":"be";
+    const d=new Date(t.openTime);
+    const ds=isNaN(d)?"–":d.toLocaleDateString("en-GB",{day:"2-digit",month:"short"});
+    const wr=(t.weightedR!=null)? t.weightedR : t.R;
+    const wrCls=wr>0?"pos":wr<0?"neg":"be";
+    const iv=(t.intervenedR!=null && t.intervenedR!==0)
+      ? `<span class="iv" style="color:${t.intervenedR>0?'var(--pos)':'var(--neg)'}">✋ ${fmt(t.intervenedR,2)}R</span>`
+      : (t.followed? '<span style="color:var(--muted2)">–</span>' : '<span style="color:var(--muted2)">–</span>');
+    const chart=t.img
+      ? `<img class="thumb" src="${esc(t.img)}" alt="Chart trade ${t.id}" loading="lazy" onclick="openLb('${esc(t.img)}','${esc(tCap(t))}')">`
+      : `<div class="thumb-ph">pending</div>`;
+    const cmt=[t.note, t.deviation?("Deviation: "+t.deviation):null].filter(Boolean).join(" — ");
+    return `<tr>
+      <td style="color:var(--muted2)">${t.id}</td>
+      <td class="nw">${ds}</td>
+      <td class="px nw">${tTime(t.openTime)}</td>
+      <td class="px nw">${tTime(t.closeTime)}</td>
+      <td class="px nw">${tDur(t)}</td>
+      <td class="nw"><span class="badge ${t.system==="MR4H"?"clause":"ok"}"><span class="dot ${t.system==="MR4H"?"clause":"ok"}" style="width:6px;height:6px"></span>${t.system}</span>${t.version?`<div style="font-size:10px;color:var(--muted2);margin-top:2px">${esc(t.version)}</div>`:""}</td>
+      <td class="nw">${t.symbol}</td>
+      <td class="nw"><span class="dir ${t.direction==="Long"?"long":"short"}">${t.direction==="Long"?"▲ Long":"▼ Short"}</span></td>
+      <td class="px num nw">${px(t.entry)}</td>
+      <td class="px num nw">${px(t.sl)}</td>
+      <td class="px num nw">${px(t.exit)}</td>
+      <td class="rcell num ${cls}">${fmtR(t.R)}</td>
+      <td class="rcell num ${wrCls}" title="R weighted for actual risk taken">${fmtR(wr)}</td>
+      <td class="px num nw">${t.riskPct!=null? t.riskPct.toFixed(2)+"%" : "–"}</td>
+      <td class="px num nw" style="color:${(t.pnlEur??0)>0?'var(--pos)':(t.pnlEur??0)<0?'var(--neg)':'var(--muted)'}">${t.pnlEur!=null? (t.pnlEur>0?"+":t.pnlEur<0?"−":"")+"€"+Math.abs(t.pnlEur).toFixed(2).replace(/\.00$/,"") : "–"}</td>
+      <td class="nw">${t.score!=null? t.score+"/5" : "–"}</td>
+      <td class="nw"><span class="tag">${esc(t.newsType||(t.news===false?"No news":"–"))}</span></td>
+      <td class="nw">${esc(t.bias||"–")}</td>
+      <td class="nw">${t.zone?`<span class="tag">${esc(t.zone)}</span>`:"–"}</td>
+      <td class="nw"><span class="tag">${setupText(t)}</span></td>
+      <td class="nw">${t.followed?'<span class="yes">✓ plan</span>':`<span class="no" ${t.deviation?`title="${esc(t.deviation)}"`:""}>✗ deviation</span>`}</td>
+      <td class="nw">${iv}</td>
+      <td>${chart}</td>
+      <td><div class="cmt">${esc(cmt)||"–"}</div></td>
+    </tr>`;
+  }).join("");
+}
+
+function renderMonths(rows){
+  const months={};
+  rows.forEach(t=>{ const m=String(t.openTime||"").slice(0,7); if(m) months[m]=(months[m]||0)+t.R; });
+  const keys=Object.keys(months).sort().reverse();
+  $("#months").innerHTML = keys.length? keys.map(m=>{
+    const v=months[m];
+    const lbl=new Date(m+"-01T00:00:00").toLocaleDateString("en-GB",{month:"long",year:"numeric"});
+    return `<div class="month-row"><span class="m">${lbl}</span><span class="v" style="color:${v>=0?'var(--pos)':'var(--neg)'}">${fmtR(v)}</span></div>`;
+  }).join("") : '<p class="hint">No data yet</p>';
+}
+
+function renderGallery(rows){
+  $("#gallery").innerHTML = rows.slice().reverse().map(t=>{
+    const d=new Date(t.openTime);
+    const ds=isNaN(d)?"":d.toLocaleDateString("en-GB",{day:"2-digit",month:"short"});
+    const cls=t.R>0?"pos":t.R<0?"neg":"be";
+    const im=t.img
+      ? `<img class="im" src="${esc(t.img)}" alt="Chart of trade ${t.id}" loading="lazy" onclick="openLb('${esc(t.img)}','${esc(tCap(t))}')">`
+      : `<div class="ph">screenshot pending</div>`;
+    return `<div class="shot">${im}
+      <div class="cap"><span class="nw">#${t.id} · ${ds} · ${t.symbol} <span class="dir ${t.direction==="Long"?"long":"short"}">${t.direction}</span></span>
+      <span class="rcell ${cls}">${fmtR(t.R)}</span></div>
+    </div>`;
+  }).join("");
+}
+
+function renderDist(rows,s){
+  const buckets=[
+    {t:"≤ −1R", lo:-Infinity, hi:-0.999, col:"var(--neg)"},
+    {t:"−1–0", lo:-0.999, hi:0, col:"#fca5a5"},
+    {t:"0–1R", lo:0, hi:1.001, col:"#86efac"},
+    {t:"1–2R", lo:1.001, hi:2.001, col:"#4ade80"},
+    {t:"2–3R", lo:2.001, hi:3.001, col:"#34d399"},
+    {t:"≥ 3R", lo:3.001, hi:Infinity, col:"var(--pos)"}
+  ];
+  const counts=buckets.map(b=>rows.filter(t=>t.R>b.lo && t.R<=b.hi).length);
+  const max=Math.max(1,...counts);
+  $("#dist").innerHTML = buckets.map((b,i)=>`
+    <div class="col">
+      <div class="c">${counts[i]||""}</div>
+      <div class="b" style="height:${counts[i]/max*100}%;background:${b.col}"></div>
+      <div class="t">${b.t}</div>
+    </div>`).join("");
+  $("#disciplineBar").innerHTML =
+    `<i style="width:${s.followRate}%;background:var(--pos)"></i><i style="width:${100-s.followRate}%;background:var(--neg)"></i>`;
+  $("#discHint").textContent = `Discipline ${s.followRate.toFixed(0)}% — ${s.followed} of ${s.n} trade${s.n===1?"":"s"} by the book${s.n-s.followed?`, ${s.n-s.followed} deviation(s)`:""}.`;
+}
+
+$("#demoBtn").onclick=()=>{ state.demo=!state.demo;
+  $("#demoBtn").classList.toggle("primary",state.demo);
+  $("#demoBtn").textContent = state.demo? "Back to real data" : "Sample view";
+  render(); };
+document.querySelectorAll("#tabs button").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active"); state.filter=b.dataset.f; render();
+  };
+});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+/* Oscar K — gedeelde stijl. Donker, rustig, data-eerst. */
+:root{
+  --bg:#0a0e13; --bg2:#0d131b; --card:#111926; --card2:#0f1620;
+  --line:#1e2a3a; --line2:#26374b;
+  --txt:#e7eef7; --muted:#8ba0b6; --muted2:#5f7488;
+  /* accentkleuren (UI, badges, glow) */
+  --clause:#22d3ee; --ok:#f59e0b;
+  /* seriekleuren voor grafieken (gevalideerd op donkere achtergrond) */
+  --clause-s:#0aa2bd; --ok-s:#cc7a06;
+  --pos:#34d399; --neg:#f87171; --be:#94a3b8;
+  --pos-bg:rgba(52,211,153,.12); --neg-bg:rgba(248,113,113,.12);
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --r:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(34,211,238,.08), transparent 60%),
+    radial-gradient(1000px 500px at 0% 0%, rgba(245,158,11,.06), transparent 55%),
+    var(--bg);
+  color:var(--txt);
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.55;
+}
+a{color:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding:0 clamp(14px,4vw,44px)}
+
+/* ---------- Navigatie ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(10,14,19,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.navrow{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:750;font-size:17px;letter-spacing:-.3px;text-decoration:none}
+.logo .mark{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:800;
+  background:linear-gradient(135deg,rgba(34,211,238,.25),rgba(245,158,11,.25));border:1px solid var(--line2)}
+.navlinks{display:flex;gap:4px;flex-wrap:wrap}
+.navlinks a{text-decoration:none;color:var(--muted);font-size:13.5px;font-weight:600;padding:8px 13px;border-radius:10px;transition:.15s}
+.navlinks a:hover{color:var(--txt);background:#141f2d}
+.navlinks a.active{color:var(--txt);background:#1a2534}
+
+/* ---------- Typografie ---------- */
+h1{font-size:clamp(28px,4.5vw,44px);line-height:1.12;letter-spacing:-1px;margin:0 0 14px;font-weight:780}
+h2{font-size:clamp(20px,2.6vw,26px);letter-spacing:-.4px;margin:0 0 6px;font-weight:730}
+h3{font-size:15px;margin:0 0 3px;font-weight:700}
+.eyebrow{color:var(--muted2);font-size:11.5px;letter-spacing:2px;text-transform:uppercase;font-weight:650;margin-bottom:10px}
+.lede{color:var(--muted);font-size:clamp(15px,1.8vw,17.5px);max-width:640px}
+.hint{color:var(--muted2);font-size:12.5px;margin:0 0 14px}
+section.block{padding:56px 0 8px}
+.section-head{margin-bottom:22px}
+
+/* ---------- Chips / badges ---------- */
+.chip{display:inline-flex;align-items:center;gap:7px;padding:4px 11px;border:1px solid var(--line2);border-radius:999px;font-size:12.5px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.dot.clause{background:var(--clause);box-shadow:0 0 10px var(--clause)}
+.dot.ok{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:7px;font-size:11.5px;font-weight:600}
+.badge.clause{background:rgba(34,211,238,.12);color:var(--clause)}
+.badge.ok{background:rgba(245,158,11,.13);color:var(--ok)}
+.badge.neutral{background:#152030;color:var(--muted);border:1px solid var(--line)}
+.badge.oos{background:rgba(52,211,153,.12);color:var(--pos)}
+.badge.is{background:rgba(148,163,184,.14);color:var(--be)}
+
+/* ---------- Knoppen ---------- */
+.btn{border:1px solid var(--line2);background:var(--card2);color:var(--txt);font:inherit;font-size:14px;font-weight:650;
+  padding:11px 18px;border-radius:12px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:9px;text-decoration:none}
+.btn:hover{border-color:#38516d;background:#142030}
+.btn.primary{border-color:var(--clause);background:rgba(34,211,238,.1);color:var(--clause)}
+.btn.primary:hover{background:rgba(34,211,238,.16)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+.btn.ghost:hover{color:var(--txt)}
+
+/* ---------- Kaarten / panelen ---------- */
+.panel{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:var(--r);
+  padding:20px 22px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:18px}
+.cols2{grid-template-columns:1fr 1fr}
+.cols3{grid-template-columns:repeat(3,1fr)}
+.cols2-w{grid-template-columns:1.55fr 1fr}
+@media(max-width:900px){.cols2,.cols3,.cols2-w{grid-template-columns:1fr}}
+
+/* ---------- KPI / stat-tegels ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.kpi{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 17px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi .label{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.7px;font-weight:600}
+.kpi .val{font-size:26px;font-weight:750;margin-top:8px;letter-spacing:-.5px;line-height:1;font-variant-numeric:tabular-nums}
+.kpi .foot{color:var(--muted2);font-size:11.5px;margin-top:7px}
+.kpi.accent::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--clause)}
+.kpi.accent-ok::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--ok)}
+.val.pos{color:var(--pos)} .val.neg{color:var(--neg)}
+
+/* ---------- Tabellen ---------- */
+.tablewrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px}
+thead th{background:#0e1622;color:var(--muted);text-align:left;font-weight:600;
+  font-size:11px;text-transform:uppercase;letter-spacing:.6px;padding:12px 14px;border-bottom:1px solid var(--line2);white-space:nowrap}
+tbody td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle;font-variant-numeric:tabular-nums}
+tbody tr:hover{background:#0f1826}
+tbody tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right}
+.pos-t{color:var(--pos);font-weight:650} .neg-t{color:var(--neg);font-weight:650}
+
+/* ---------- Kleine barvisual (per-era) ---------- */
+.miniband{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.miniband .row{display:grid;grid-template-columns:96px 1fr 74px;gap:12px;align-items:center}
+.miniband .lbl{color:var(--muted);font-size:12.5px;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.miniband .track{height:14px;background:#16202e;border-radius:5px;position:relative;overflow:hidden}
+.miniband .fill{position:absolute;inset:1px auto 1px 0;border-radius:4px}
+.miniband .v{font-size:12.5px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+
+/* ---------- Lijsten ---------- */
+.feature{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+.feature:last-child{border-bottom:0}
+.feature .ico{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;font-size:15px;
+  background:#152030;border:1px solid var(--line2)}
+.feature p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+
+/* ---------- Voetnoot / disclaimer ---------- */
+footer{margin-top:70px;border-top:1px solid var(--line);padding:30px 0 44px}
+.disclaimer{color:var(--muted2);font-size:12px;line-height:1.65;max-width:860px}
+.footrow{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:16px;color:var(--muted);font-size:13px}
+.footrow a{color:var(--muted);text-decoration:none}
+.footrow a:hover{color:var(--txt)}
+
+.note{border-left:3px solid var(--line2);padding:10px 16px;background:var(--card2);border-radius:0 12px 12px 0;color:var(--muted);font-size:13.5px}
+.note.pos{border-left-color:var(--pos)}
+.note.warn{border-left-color:var(--ok)}
+
+::-webkit-scrollbar{height:10px;width:10px}
+::-webkit-scrollbar-thumb{background:#22303f;border-radius:8px}
